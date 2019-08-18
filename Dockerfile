@@ -1,26 +1,8 @@
-FROM node:10
-
-# Update OS environment
-RUN apt-get update ; apt-get upgrade -fy
-
-# Create app directory
+FROM node:10.13-alpine
+ENV NODE_ENV production
 WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is use to ensure both package.json & packagae-lock.json are copied
-# where available (npm@5+)
-
-COPY package*.json ./
-
-# Development Build
-RUN npm install
-
-# Production Build
-# RUN npm ci --only=production
-
-# Bundle app source
-
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+RUN npm install --production --silent && mv node_modules ../
 COPY . .
-
 EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+CMD npm start

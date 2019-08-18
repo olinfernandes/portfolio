@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 function handleOps (err, data, callback) {
-	if(err) callback(err);
-	if(!data) callback(null, {msg: 'Data not found!', data: null});
-	if(data) callback(null, {msg: 'Data Found', data});
+	if(err) return callback(err);
+	else if(!data) return callback(null, {msg: 'Data not found!', data: null});
+	else if(data) return callback(null, {msg: 'Data Found', data});
 	return;
 }
 
-mongoose.connect('mongodb://172.19.0.4/Portfolio', {useNewUrlParser: true})
+mongoose.connect('mongodb://172.19.0.4/Portfolio', {useNewUrlParser: true, useCreateIndex: true})
 	.then(() => console.log('Connected to mongodb2'))
 	.catch(error => console.log(error));
 
