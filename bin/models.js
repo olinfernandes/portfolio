@@ -43,7 +43,7 @@ const models = {
 			Email: params.email,
 			Password: params.password
 		});
-		user.save({}, callback(err, response))
+		user.save().then((response, err) => handleOps(err, response, callback))
 	}
   }
 };
