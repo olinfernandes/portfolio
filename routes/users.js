@@ -1,15 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { User, Ops } = require('../bin/models');
+const { User, Ops } = require("../bin/models");
 
 /* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.send('respond with a resource');
-  Ops.find((err, response)=> {
-  	if(err) res.status(500).send('Something went wrong!');
-  	else res.json(response);
-  	return next();
+router.get("/", (req, res, next) => {
+  Ops.find((err, response) => {
+    console.log(err, response);
+    res.json(response);
   });
 });
+
+router.post("/", (req, res, next) => {
+  console.log(req.body);
+  res.send('response with a resource\n');
+})
 
 module.exports = router;
