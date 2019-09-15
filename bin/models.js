@@ -7,8 +7,10 @@ function handleOps(err, data, callback) {
   else if (data) return callback(null, { message: "Data Found", data });
 }
 
+const dbUrl = '172.19.0.4/Portfolio';
+
 mongoose
-  .connect("mongodb://172.19.0.4/Portfolio", {
+  .connect(`mongodb://${dbUrl}`, {
     useNewUrlParser: true,
     useCreateIndex: true
   })
@@ -23,6 +25,41 @@ const User = mongoose.model(
     Password: { type: String }
   })
 );
+
+module.exports.Modles = {
+  User: class extends User {
+    constructor(props){
+      super(props);
+    }
+    find (params){
+      return new Promise((resolve, reject) => {
+        if (!params) {
+          User.find()
+            .then(response => {
+              console.log(response);
+              resolve(response);
+            })
+            .catch(error => {
+              console.error(error);
+              reject(error);
+            })
+        } else {
+          const { id } = params;
+          User.findById(id)
+            .then(user =>
+              !user
+                ? reject({message: "No user found!", user})
+                : resolve(user)
+            )
+            .catch(error => {
+              console.log(error);
+              reject(error);
+            })
+        }
+      });
+    }
+  }
+}
 
 const models = {
   User,
