@@ -20,6 +20,7 @@ const User = model(
     name: { type: String, default: null, index: true },
     email: { type: String, default: null, index: true },
     password: { type: String, required: true },
+    role: { type: String, default: 'USER', index: true },
   })
 );
 const Post = model(
