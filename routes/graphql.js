@@ -104,17 +104,21 @@ const Mutation = new GraphQLObjectType({
     updateUser: {
       type: UserType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
       },
       resolve: (parent, args) =>
-        User.findByIdAndUpdate(args.id, {
-          name: args.name,
-          email: args.email,
-          password: args.password,
-        }),
+        User.findByIdAndUpdate(
+          args.id,
+          {
+            name: args.name,
+            email: args.email,
+            password: args.password,
+          },
+          { new: true }
+        ),
     },
     deleteUser: {
       type: new GraphQLList(UserType),
@@ -128,7 +132,7 @@ const Mutation = new GraphQLObjectType({
       type: PostType,
       args: {
         title: { type: new GraphQLNonNull(GraphQLString) },
-        userId: { type: new GraphQLNonNull(GraphQLString) },
+        userId: { type: new GraphQLNonNull(GraphQLID) },
         body: { type: new GraphQLNonNull(GraphQLString) },
       },
       resolve: (parent, args) => new Post({ ...args }),
@@ -136,28 +140,32 @@ const Mutation = new GraphQLObjectType({
     updatePost: {
       type: PostType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
         title: { type: new GraphQLNonNull(GraphQLString) },
-        userId: { type: new GraphQLNonNull(GraphQLString) },
+        userId: { type: new GraphQLNonNull(GraphQLID) },
         body: { type: GraphQLString },
       },
       resolve: (parent, args) =>
-        Post.findByIdAndUpdate(args.id, {
-          title: args.title,
-          userId: args.userId,
-          body: args.body,
-        }),
+        Post.findByIdAndUpdate(
+          args.id,
+          {
+            title: args.title,
+            userId: args.userId,
+            body: args.body,
+          },
+          { new: true }
+        ),
     },
     deletePost: {
       type: new GraphQLList(PostType),
-      args: { id: { type: new GraphQLNonNull(GraphQLString) } },
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
       resolve: (parent, args) =>
         Post.findByIdAndDelete(args.id).then(() => Post.find({})),
     },
     addComment: {
       type: PostType,
       args: {
-        postId: { type: new GraphQLNonNull(GraphQLString) },
+        postId: { type: new GraphQLNonNull(GraphQLID) },
         body: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -168,7 +176,7 @@ const Mutation = new GraphQLObjectType({
     updateComment: {
       type: PostType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
         body: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -183,7 +191,7 @@ const Mutation = new GraphQLObjectType({
     deleteComment: {
       type: PostType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: (parent, args) =>
         Comment.findByIdAndDelete(args.id).then((comment) =>
