@@ -9,6 +9,8 @@ const {
   GraphQLNonNull,
   GraphQLObjectType,
 } = require('graphql');
+const { PubSub } = require('graphql-subscriptions');
+const pubsub = new PubSub();
 const { User, Post, Comment } = require('../bin/models.js');
 
 const UserType = new GraphQLObjectType({
@@ -99,7 +101,8 @@ const Mutation = new GraphQLObjectType({
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: (parent, args) => new User({ ...args }).save(),
+      resolve: (parent, args) =>
+        new User({ ...args }).save().then(() => User.find({})),
     },
     updateUser: {
       type: UserType,
@@ -129,13 +132,14 @@ const Mutation = new GraphQLObjectType({
         User.findByIdAndDelete(args.id).then(() => User.find({})),
     },
     addPost: {
-      type: PostType,
+      type: new GraphQLList(PostType),
       args: {
         title: { type: new GraphQLNonNull(GraphQLString) },
         userId: { type: new GraphQLNonNull(GraphQLID) },
         body: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: (parent, args) => new Post({ ...args }).save(),
+      resolve: (parent, args) =>
+        new Post({ ...args }).save().then(() => Post.find({})),
     },
     updatePost: {
       type: PostType,

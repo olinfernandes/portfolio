@@ -18,6 +18,7 @@
     "express-graphql": "^0.11.0",
     "express-session": "^1.16.2",
     "graphql": "^15.3.0",
+    "graphql-subscriptions": "^1.1.0",
     "helmet": "^3.18.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
@@ -25,7 +26,8 @@
     "morgan": "~1.9.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "sirv": "^0.4.0"
+    "sirv": "^0.4.0",
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
