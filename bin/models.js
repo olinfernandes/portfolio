@@ -9,10 +9,10 @@ connect(`mongodb://${dbUrl}`, {
 })
   .then(() =>
     console.log(
-      'Connected to mongodb2\nGarphiql -> http://localhost:3000/gql\n'
+      'Connected to mongodb2\nGarphiql -> http://localhost:3000/api/gql\n'
     )
   )
-  .catch((error) => console.log(error));
+  .catch((error) => console.warn(error));
 
 const User = model(
   'User',

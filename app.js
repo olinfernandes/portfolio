@@ -1,13 +1,18 @@
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
+const passport = require('passport');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session);
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
+const initPassport = require('./bin/passport-init');
+
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth')(passport);
 const gqlRouter = require('./routes/graphql');
 
 const app = express();
@@ -22,10 +27,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({
+    name: 'xF5FAwYuUuRfgLI2rmeWbDti',
+    secret: 'IAkv7h5oir3JjuIRqdRu1ODazSqy',
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    rolling: true,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+initPassport(passport);
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/gql', gqlRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/gql', gqlRouter);
+
+app.use(function (req, res, next) {
+  console.log(req.isAuthenticated());
+  console.log(req.user);
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
