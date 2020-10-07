@@ -214,7 +214,7 @@ router.use(
   '/',
   graphqlHTTP({
     schema,
-    graphiql: true,
+    graphiql: false,
   })
 );
 
