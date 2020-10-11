@@ -1,6 +1,8 @@
 const { connect, model, Schema } = require('mongoose');
 
-const dbUrl = 'localhost/Portfolio';
+const dbUrl = process.env.DB_URL
+  ? process.env.DB_URL
+  : 'localhost/WishCollector';
 
 connect(`mongodb://${dbUrl}`, {
   useNewUrlParser: true,
@@ -9,7 +11,7 @@ connect(`mongodb://${dbUrl}`, {
 })
   .then(() =>
     console.log(
-      'Connected to mongodb2\nGarphiql -> http://localhost:3000/api/gql\n'
+      `Connected to WishCollector Database \nGarphiql -> http://localhost:3000/api/gql\n`
     )
   )
   .catch((error) => console.warn(error));
@@ -20,7 +22,7 @@ const User = model(
     name: { type: String, default: null, index: true },
     email: { type: String, default: null, index: true },
     password: { type: String, required: true },
-    role: { type: String, default: 'USER', index: true },
+    role: { type: String, default: 'USER' },
   })
 );
 const Post = model(
@@ -28,7 +30,7 @@ const Post = model(
   new Schema({
     title: { type: String, required: true, index: true },
     userId: { type: String, required: true, index: true },
-    body: { type: String, default: null },
+    body: { type: String, required: true },
     comments: { type: [String], default: [] },
   })
 );

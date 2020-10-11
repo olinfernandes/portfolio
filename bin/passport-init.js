@@ -11,7 +11,7 @@ module.exports = function (passport) {
 
   passport.deserializeUser(function (id, done) {
     User.findById(id, function (err, user) {
-      console.log('deserializing user:', user.email);
+      if (user) console.log('deserializing user:', user.email);
       done(err, user);
     });
   });
@@ -62,7 +62,7 @@ module.exports = function (passport) {
             }
             // already exists
             if (user) {
-              console.log('User already exists with username: ' + username);
+              console.log('User already exists with email: ' + username);
               return done(null, false);
             } else {
               // if there is no user, create the user
@@ -96,6 +96,6 @@ module.exports = function (passport) {
   };
   // Generates hash using bCrypt
   var createHash = function (password) {
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+    return bCrypt.hashSync(password, bCrypt.genSaltSync(10));
   };
 };

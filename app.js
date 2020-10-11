@@ -11,7 +11,6 @@ const cors = require('cors');
 
 const initPassport = require('./bin/passport-init');
 
-const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth')(passport);
 const gqlRouter = require('./routes/graphql');
 
@@ -41,12 +40,35 @@ app.use(passport.initialize());
 app.use(passport.session());
 initPassport(passport);
 
-app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/gql', gqlRouter);
+app.use(
+  '/api/gql',
+  // function (req, res, next) {
+  //   console.log(req.isAuthenticated());
+  //   if (!req.isAuthenticated()) {
+  //     const err = createError(401);
+  //     res.locals.message = err.message;
+  //     res.locals.error = req.app.get('env') === 'development' ? err : {};
+  //     res.status(err.status);
+  //     res.render('error');
+  //     return;
+  //   }
+  //   console.log(req.user);
+  //   next();
+  // },
+  gqlRouter
+);
 
 app.use(function (req, res, next) {
   console.log(req.isAuthenticated());
+  if (!req.isAuthenticated()) {
+    const err = createError(401);
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status);
+    res.render('error');
+    return;
+  }
   console.log(req.user);
   next();
 });

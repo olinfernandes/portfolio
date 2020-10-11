@@ -1,16 +1,16 @@
 const router = require('express').Router();
 
 module.exports = function (passport) {
-  //sends successful login state back to angular
+  //sends successful login state back to frontend
   router
     .get('/success', function (req, res) {
       console.log('Authentication Successfull');
       res.send({ state: 'success', user: req.user ? req.user : null });
     })
 
-    //sends failure login state back to angular
+    //sends failure login state back to frontend
     .get('/failure', function (req, res) {
-      res.send({
+      res.status(401).send({
         state: 'failure',
         user: null,
         message: 'Invalid username or password',
