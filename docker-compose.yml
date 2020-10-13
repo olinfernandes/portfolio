@@ -1,24 +1,52 @@
-version: '3'
+version: '3.6'
 
 services:
-  express-server:
-    image: 'express-server'
-    build: .
-    environment:
-      NODE_ENV: 'production'
-      DB_URL: 'wish-collector-db/Database'
-      PORT: '80'
-    ports:
-      - '80:80'
   mongo-db:
-    image: 'mongo'
-    container_name: 'wish-collector-db'
+    image: mongo
     environment:
       - MONGODB_INITDB_DATABASE=wishcollector
       - MONGODB_INITDB_ROOT_USERNAME=nsadmin
-      - MONGODB_INITdb_ROOT_PASSWORD=ninestack!23
-    volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./mongo-volume:/data/db
+      - MONGODB_INITDB_ROOT_PASSWORD=ninestack!23
+    #volumes:
+    #- ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    #- ./mongo-volume:/data/db
     ports:
       - '27017-2019:27017-2019'
+  express-server:
+    image: express-server
+    build: .
+    environment:
+      NODE_ENV: production
+      DB_URL: mongo-db/Database
+      HASURA_URL: graphql-engine:8080/v1/graphql
+    ports:
+      - '3000:3000'
+    depends_on:
+      - 'mongo-db'
+    restart: always
+  postgres:
+    image: postgres:12
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+  graphql-engine:
+    image: hasura/graphql-engine:v1.3.2
+    ports:
+      - '8080:8080'
+    depends_on:
+      - 'postgres'
+      - 'express-server'
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # set to "false" to disable console
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: 'false'
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to set an admin secret
+      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+volumes:
+  db_data:

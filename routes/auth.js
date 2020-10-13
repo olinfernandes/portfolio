@@ -38,9 +38,9 @@ module.exports = function (passport) {
     //is logged in
     .get('/isloggedin', function (req, res) {
       if (req.isAuthenticated()) {
-        res.send({ state: 'success', user: req.user });
+        res.status(200).send({ state: 'success', user: req.user });
       } else {
-        res.send({ state: 'failure', user: null });
+        res.status(401).send({ state: 'failure', user: null });
       }
     })
 
