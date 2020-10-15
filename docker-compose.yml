@@ -1,15 +1,16 @@
-version: '3.6'
+version: '3.3'
 
 services:
   mongo-db:
     image: mongo
+    restart: always
     environment:
       - MONGODB_INITDB_DATABASE=wishcollector
       - MONGODB_INITDB_ROOT_USERNAME=nsadmin
       - MONGODB_INITDB_ROOT_PASSWORD=ninestack!23
-    #volumes:
-    #- ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    #- ./mongo-volume:/data/db
+    volumes:
+      #- ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongo-volume:/data/db
     ports:
       - '27017-2019:27017-2019'
   express-server:
@@ -17,10 +18,11 @@ services:
     build: .
     environment:
       NODE_ENV: production
+      PORT: 80
       DB_URL: mongo-db/Database
       HASURA_URL: graphql-engine:8080/v1/graphql
     ports:
-      - '3000:3000'
+      - '80:80'
     depends_on:
       - 'mongo-db'
     restart: always
@@ -37,7 +39,6 @@ services:
       - '8080:8080'
     depends_on:
       - 'postgres'
-      - 'express-server'
     restart: always
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
@@ -47,6 +48,7 @@ services:
       HASURA_GRAPHQL_DEV_MODE: 'false'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
-      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+      HASURA_GRAPHQL_ADMIN_SECRET: IAkv7h5oir3JjuIRqdRu1ODazSqy
 volumes:
   db_data:
+  mongo-volume:

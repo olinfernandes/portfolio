@@ -9,11 +9,7 @@ connect(`mongodb://${dbUrl}`, {
   useCreateIndex: true,
   useUnifiedTopology: true,
 })
-  .then(() =>
-    console.log(
-      `Connected to WishCollector Database \nGarphiql -> http://localhost:3000/api/gql\n`
-    )
-  )
+  .then(() => console.log(`Connected to WishCollector Database`))
   .catch((error) => console.warn(error));
 
 const User = model(
