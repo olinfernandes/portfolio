@@ -21,15 +21,16 @@ module.exports = function (passport) {
     new LocalStrategy(
       {
         passReqToCallback: true,
+        usernameField: 'email',
       },
-      function (req, username, password, done) {
-        // check in mongo if a user with username exists or not
-        User.findOne({ email: username }, function (err, user) {
+      function (req, email, password, done) {
+        // check in mongo if a user with email exists or not
+        User.findOne({ email: email }, function (err, user) {
           // In case of any error, return using the done method
           if (err) return done(err);
-          // Username does not exist, log the error and redirect back
+          // email does not exist, log the error and redirect back
           if (!user) {
-            console.log('User Not Found with username ' + username);
+            console.log('User Not Found with email ' + email);
             return done(null, false);
           }
           // User exists but wrong password, log the error
@@ -49,12 +50,13 @@ module.exports = function (passport) {
     'register',
     new LocalStrategy(
       {
+        usernameField: 'email',
         passReqToCallback: true, // allows us to pass back the entire request to the callback
       },
-      function (req, username, password, done) {
+      function (req, email, password, done) {
         findOrCreateUser = function () {
-          // find a user in mongo with provided username
-          User.findOne({ email: username }, function (err, user) {
+          // find a user in mongo with provided email
+          User.findOne({ email: email }, function (err, user) {
             // In case of any error, return using the done method
             if (err) {
               console.log('Error in Registration: ' + err);
@@ -62,14 +64,14 @@ module.exports = function (passport) {
             }
             // already exists
             if (user) {
-              console.log('User already exists with email: ' + username);
+              console.log('User already exists with email: ' + email);
               return done(null, false);
             } else {
               // if there is no user, create the user
               const newUser = new User(req.body);
 
               // set the user's local credentials
-              newUser.email = username;
+              newUser.email = email;
               newUser.password = createHash(password);
 
               // save the user
