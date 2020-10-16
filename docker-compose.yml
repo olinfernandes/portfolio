@@ -18,11 +18,11 @@ services:
     build: .
     environment:
       NODE_ENV: production
-      PORT: 80
+      PORT: 3030
       DB_URL: mongo-db/Database
       HASURA_URL: graphql-engine:8080/v1/graphql
     ports:
-      - '80:80'
+      - '3030:3030'
     depends_on:
       - 'mongo-db'
     restart: always
@@ -48,7 +48,7 @@ services:
       HASURA_GRAPHQL_DEV_MODE: 'true'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
-      HASURA_GRAPHQL_ADMIN_SECRET: IAkv7h5oir3JjuIRqdRu1ODazSqy
+      #HASURA_GRAPHQL_ADMIN_SECRET: IAkv7h5oir3JjuIRqdRu1ODazSqy
 volumes:
   db_data:
   mongo-volume:
