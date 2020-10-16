@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
-const initPassport = require('./bin/passport-init');
+require('./bin/passport-init')(passport);
 
 const authRouter = require('./routes/auth')(passport);
 // const gqlRouter = require('./routes/graphql');
@@ -38,7 +38,6 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-initPassport(passport);
 
 app.use('/api/auth', authRouter);
 // app.use(
