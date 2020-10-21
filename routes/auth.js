@@ -4,8 +4,9 @@ module.exports = function (passport) {
   //sends successful login state back to frontend
   router
     .get('/success', function (req, res) {
-      console.log('Authentication Successfull');
-      res.send({ state: 'success', user: req.user ? req.user : null });
+      res
+        .status(200)
+        .send({ state: 'success', user: req.user ? req.user : null });
     })
 
     //sends failure login state back to frontend
@@ -52,7 +53,25 @@ module.exports = function (passport) {
         console.log('Session Destroyed!');
         res.send({ state: 'success', user: null, message: 'Logged out' });
       });
-    });
+    })
+
+    //update role
+    .put(
+      '/update/role',
+      passport.authenticate('update-role', {
+        successRedirect: '/api/auth/success',
+        failureRedirect: '/api/auth/failure',
+      })
+    )
+
+    //update password
+    .put(
+      '/update/password',
+      passport.authenticate('update-password', {
+        successRedirect: '/api/auth/success',
+        failureRedirect: '/api/auth/failure',
+      })
+    );
 
   return router;
 };

@@ -16,7 +16,7 @@ const User = model(
   'User',
   new Schema({
     name: { type: String, default: null, index: true },
-    email: { type: String, default: null, index: true },
+    email: { type: String, default: null, index: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, default: 'USER' },
   })
