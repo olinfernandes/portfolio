@@ -30,7 +30,7 @@ module.exports = (passport) => {
             return done(null, false, {
               message: ' User not found with email ' + email,
             });
-          if (req.user.email === email) {
+          if (req.user.email === email || req.user.role === 'ADMIN') {
             User.findOneAndUpdate(
               { email },
               { password: createHash(password) },
